@@ -1,11 +1,37 @@
 data:
-  raw_path: data/raw/sleep_mobile_stress_dataset_15000.csv
-  processed_path: data/processed/train.csv
+  path: "data/sleep_stress.csv"
+  target_column: "stress_level"
+  required_columns:
+    - "age"
+    - "gender"
+    - "occupation"
+    - "daily_screen_time_hours"
+    - "phone_usage_before_sleep_minutes"
+    - "sleep_duration_hours"
+    - "sleep_quality_score"
+    - "stress_level"
+    - "caffeine_intake_cups"
+    - "physical_activity_minutes"
+    - "notifications_received_per_day"
+    - "mental_fatigue_score"
+  version: "v1"
+
+preprocessing:
+  missing_rate: 0.05
+  missing_columns:
+    - "sleep_duration_hours"
+    - "daily_screen_time_hours"
+    - "mental_fatigue_score"
+  strategy: mean
+  categorical_columns:
+    - "gender"
+    - "occupation"
 
 model:
-  type: random_forest
   n_estimators: 100
-  max_depth: 5
+  max_depth: 10
 
-output:
-  model_path: models/model.pkl
+training:
+  test_size: 0.2
+  random_state: 42
+  min_accuracy_threshold: 0.6

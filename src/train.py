@@ -16,9 +16,10 @@ from src.preprocessing import (
 from src.evaluate import evaluate_model
 
 
-def train():
-    
-    config = load_config("configs/params.yaml")
+def train(config=None):
+
+    if config is None:
+        config = load_config("configs/params.yaml")
 
     df = pd.read_csv(config["data"]["path"])
 
@@ -49,7 +50,9 @@ def train():
 
     mlflow.set_experiment("stress-level-prediction")
 
-    with mlflow.start_run():
+    run_name = f"rf-estimators{config['model']['n_estimators']}-depth{config['model']['max_depth']}"
+
+    with mlflow.start_run(run_name=run_name) as run:
 
         # log all hyperparameters from config
         mlflow.log_param("n_estimators", config["model"]["n_estimators"])
@@ -88,6 +91,8 @@ def train():
         if metrics["accuracy"] < min_accuracy:
             print(f"FAILED: accuracy {metrics['accuracy']:.4f} is below threshold {min_accuracy}")
             sys.exit(1)
+
+        return run.info.run_id
 
 
 if __name__ == "__main__":

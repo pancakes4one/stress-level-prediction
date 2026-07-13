@@ -1,31 +1,40 @@
-from preprocessing import load_config
-from train import train
+import mlflow
 
-base_config = load_config("configs/params.yaml")
+# Connect to the experiment
+mlflow.set_experiment("stress-level-prediction")
 
-experiments = [
-    {"model": {"n_estimators": 50, "max_depth": 5}},
-    {"model": {"n_estimators": 100, "max_depth": 10}},
-    {"model": {"n_estimators": 200, "max_depth": 10}},
-    {"model": {"n_estimators": 300, "max_depth": 15}},
-    {"model": {"n_estimators": 500, "max_depth": 20}},
-]
+# Search for all completed runs, sorted by F1 score
+runs = mlflow.search_runs(
+    experiment_ids=[mlflow.get_experiment_by_name("stress-level-prediction").experiment_id],
+    filter_string="status = 'FINISHED'",
+    order_by=["metrics.f1_score DESC"]
+)
 
-print(f"Running {len(experiments)} experiments...\n")
+# Show the top 5 runs
+print("Top 5 Runs by F1 Score:")
+print("=" * 80)
+for i, row in runs.head(5).iterrows():
+    print(f"\nRun: {row['run_id'][:8]}...")
+    print(f"  Model:    {row['params.model_type']}")
+    print(f"  F1:       {row['metrics.f1_score']:.4f}")
+    print(f"  Accuracy: {row['metrics.accuracy']:.4f}")
+    print(f"  AUC-ROC:  {row['metrics.auc_roc']:.4f}")
 
-for i, overrides in enumerate(experiments):
-    print(f"\n{'=' * 60}")
-    print(f"Experiment {i + 1}/{len(experiments)}")
-    print(f"{'=' * 60}")
+# Find the best run
+best_run = runs.iloc[0]
+print(f"\n{'=' * 80}")
+print(f"BEST MODEL")
+print(f"{'=' * 80}")
+print(f"Run ID:     {best_run['run_id']}")
+print(f"Model Type: {best_run['params.model_type']}")
+print(f"F1 Score:   {best_run['metrics.f1_score']:.4f}")
+print(f"Accuracy:   {best_run['metrics.accuracy']:.4f}")
+print(f"AUC-ROC:    {best_run['metrics.auc_roc']:.4f}")
 
-    # start from the base config and layer the override on top
-    current_config = base_config.copy()
-    current_config["model"] = overrides["model"]
-
-    try:
-        run_id = train(current_config)
-        print(f"Completed. Run ID: {run_id}")
-    except Exception as e:
-        print(f"Failed: {e}")
-
-print("\nAll experiments complete. Run 'mlflow ui' to compare results.")
+# Bonus: show how metrics vary by model type
+print(f"\n{'=' * 80}")
+print("Average F1 Score by Model Type:")
+print("=" * 80)
+summary = runs.groupby("params.model_type")["metrics.f1_score"].agg(["mean", "max", "count"])
+summary.columns = ["avg_f1", "best_f1", "num_runs"]
+print(summary.sort_values("best_f1", ascending=False).to_string())

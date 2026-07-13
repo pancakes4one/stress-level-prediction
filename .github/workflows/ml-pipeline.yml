@@ -34,7 +34,13 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
+          pip install dvc
+
+      - name: Pull data with DVC
+        run: |
+          dvc pull -v
 
       - name: Run pytest
         run: pytest tests/ -v --tb=short
@@ -65,7 +71,13 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
+          pip install dvc
+
+      - name: Pull data with DVC
+        run: |
+          dvc pull -v
 
       - name: Train model
         run: python src/train.py

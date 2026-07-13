@@ -22,7 +22,6 @@ def validate_dataframe(df, required_columns):
 
     return True
 
-
 def simulate_missing_values(df, columns, rate, seed=42):
     # copy so we don't mess up the original dataframe
     df_copy = df.copy()
@@ -66,4 +65,18 @@ def encode_categoricals(df, columns):
     # one-hot encoding: turns each category into its own 0/1 column
     df_copy = pd.get_dummies(df_copy, columns=columns, drop_first=True)
 
+    return df_copy
+
+def bucket_stress_level(df, column):
+    df_copy = df.copy()
+
+    def to_bucket(score):
+        if score <= 3:
+            return "low"
+        elif score <= 7:
+            return "moderate"
+        else:
+            return "high"
+
+    df_copy[column] = df_copy[column].apply(to_bucket)
     return df_copy

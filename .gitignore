@@ -1,6 +1,7 @@
 # Data and models
 models/
 metrics/
+mlruns/
 
 # Python
 __pycache__/

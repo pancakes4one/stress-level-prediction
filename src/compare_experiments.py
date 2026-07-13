@@ -1,5 +1,5 @@
-from src.preprocessing import load_config
-from src.train import train
+from preprocessing import load_config
+from train import train
 
 base_config = load_config("configs/params.yaml")
 

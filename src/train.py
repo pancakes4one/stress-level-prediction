@@ -6,7 +6,7 @@ import mlflow.sklearn
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 
-from src.preprocessing import (
+from preprocessing import (
     load_config,
     validate_dataframe,
     simulate_missing_values,
@@ -14,12 +14,12 @@ from src.preprocessing import (
     bucket_stress_level,
     encode_categoricals,
 )
-from src.evaluate import evaluate_model
+from evaluate import evaluate_model
 
-# Anchor mlruns to this project folder
-os.environ["MLFLOW_ALLOW_FILE_STORE"] = "true"
-PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
-mlflow.set_tracking_uri(f"file://{PROJECT_ROOT}/mlruns")
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+mlflow.set_tracking_uri(f"sqlite:///{PROJECT_ROOT / 'mlflow.db'}")
 
 def train(config=None):
 

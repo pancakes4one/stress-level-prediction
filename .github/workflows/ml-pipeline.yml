@@ -40,6 +40,8 @@ jobs:
 
       - name: Pull data with DVC
         run: |
+          mkdir -p .dvc/tmp_remote
+          dvc remote modify myremote url .dvc/tmp_remote
           dvc pull -v
 
       - name: Run pytest
@@ -77,6 +79,8 @@ jobs:
 
       - name: Pull data with DVC
         run: |
+          mkdir -p .dvc/tmp_remote
+          dvc remote modify myremote url .dvc/tmp_remote
           dvc pull -v
 
       - name: Train model

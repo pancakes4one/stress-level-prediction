@@ -19,7 +19,10 @@ from evaluate import evaluate_model
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-mlflow.set_tracking_uri(f"sqlite:///{PROJECT_ROOT / 'mlflow.db'}")
+TRACKING_DIR = PROJECT_ROOT / "mlruns"
+TRACKING_DIR.mkdir(parents=True, exist_ok=True)
+os.environ.setdefault("MLFLOW_ALLOW_FILE_STORE", "true")
+mlflow.set_tracking_uri(f"file://{TRACKING_DIR}")
 
 def train(config=None):
 

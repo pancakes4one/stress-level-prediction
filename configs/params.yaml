@@ -1,5 +1,5 @@
 data:
-  path: "data/sleep_stress.csv"
+  path: "data/raw/sleep_stress.csv"
   target_column: "stress_level"
   required_columns:
     - "age"

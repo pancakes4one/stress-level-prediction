@@ -3,6 +3,7 @@ import pytest
 from src.preprocessing import load_config
 
 
+
 @pytest.fixture
 def config():
     return load_config("configs/params.yaml")
@@ -22,12 +23,10 @@ def test_expected_columns_present(df, config):
 def test_target_variable_within_expected_range(df, config):
     target_col = config["data"]["target_column"]
 
-    # stress_level is a numeric score from 1 to 10
-    # (1-3 low, 4-7 moderate, 8-10 high/extreme)
-    min_score, max_score = 1, 10
-
-    assert df[target_col].min() >= min_score, f"{target_col} has values below {min_score}"
-    assert df[target_col].max() <= max_score, f"{target_col} has values above {max_score}"
+    # note: this test runs on the raw CSV, before bucketing happens in train.py,
+    # so it should still check the raw 1-10 range here
+    assert df[target_col].min() >= 1, f"{target_col} has values below 1"
+    assert df[target_col].max() <= 10, f"{target_col} has values above 10"
 
 
 def test_numeric_features_within_expected_ranges(df):

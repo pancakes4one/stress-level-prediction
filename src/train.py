@@ -10,6 +10,7 @@ from src.preprocessing import (
     validate_dataframe,
     simulate_missing_values,
     handle_missing_values,
+    bucket_stress_level,
     encode_categoricals,
 )
 from src.evaluate import evaluate_model
@@ -31,6 +32,10 @@ def train():
 
     validate_dataframe(df, config["data"]["required_columns"])
     df = handle_missing_values(df, strategy=config["preprocessing"]["strategy"])
+
+    # turn the raw 1-10 stress score into low/moderate/high classes
+    df = bucket_stress_level(df, config["data"]["target_column"])
+
     df = encode_categoricals(df, columns=config["preprocessing"]["categorical_columns"])
 
     target_col = config["data"]["target_column"]

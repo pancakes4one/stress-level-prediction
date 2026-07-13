@@ -1,4 +1,5 @@
 import sys
+import os
 import pandas as pd
 import mlflow
 import mlflow.sklearn
@@ -15,6 +16,10 @@ from src.preprocessing import (
 )
 from src.evaluate import evaluate_model
 
+# Anchor mlruns to this project folder
+os.environ["MLFLOW_ALLOW_FILE_STORE"] = "true"
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+mlflow.set_tracking_uri(f"file://{PROJECT_ROOT}/mlruns")
 
 def train(config=None):
 

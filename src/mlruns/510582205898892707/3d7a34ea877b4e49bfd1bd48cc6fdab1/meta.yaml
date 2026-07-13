@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/jessiccaangelov/Desktop/TripleTen/TripleTen ML:AI/Sprint
+  17 Project/stress-level-prediction/src/mlruns/510582205898892707/3d7a34ea877b4e49bfd1bd48cc6fdab1/artifacts
+end_time: 1783965413599
+entry_point_name: ''
+experiment_id: '510582205898892707'
+lifecycle_stage: active
+run_id: 3d7a34ea877b4e49bfd1bd48cc6fdab1
+run_name: rf-estimators100-depth10
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1783965406194
+status: 3
+tags: []
+user_id: jessiccaangelov

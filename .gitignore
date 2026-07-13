@@ -6,7 +6,7 @@ mlruns/
 # Python
 __pycache__/
 *.pyc
-.venv/
+.venv-mlflow
 
 # OS
 .DS_Store

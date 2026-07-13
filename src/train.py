@@ -17,13 +17,12 @@ from src.evaluate import evaluate_model
 
 
 def train():
-    # 1. read everything from the yaml config, nothing hardcoded
+    
     config = load_config("configs/params.yaml")
 
-    # 2. load and preprocess the data using preprocessing.py functions
     df = pd.read_csv(config["data"]["path"])
 
-    # dataset is clean, so simulate missing values per project requirements
+    # dataset is clean, simulate missing values
     df = simulate_missing_values(
         df,
         columns=config["preprocessing"]["missing_columns"],
@@ -48,19 +47,21 @@ def train():
         random_state=config["training"]["random_state"],
     )
 
+    mlflow.set_experiment("stress-level-prediction")
+
     with mlflow.start_run():
 
-        # 3a. log all hyperparameters from config
+        # log all hyperparameters from config
         mlflow.log_param("n_estimators", config["model"]["n_estimators"])
         mlflow.log_param("max_depth", config["model"]["max_depth"])
         mlflow.log_param("missing_strategy", config["preprocessing"]["strategy"])
         mlflow.log_param("test_size", config["training"]["test_size"])
         mlflow.log_param("random_state", config["training"]["random_state"])
 
-        # 3b. log the data version (DVC hash or label from config)
+        # log the data version (DVC hash or label from config)
         mlflow.log_param("data_version", config["data"]["version"])
 
-        # 3. train a simple model, hyperparameters come from config
+        # train a simple model, hyperparameters come from config
         model = RandomForestClassifier(
             n_estimators=config["model"]["n_estimators"],
             max_depth=config["model"]["max_depth"],
@@ -68,12 +69,12 @@ def train():
         )
         model.fit(X_train, y_train)
 
-        # 3c. evaluate and log at least 3 metrics
+        # evaluate and log at least 3 metrics
         metrics = evaluate_model(model, X_test, y_test)
         for name, value in metrics.items():
             mlflow.log_metric(name, value)
 
-        # 3d. log the trained model as an MLflow artifact
+        # log trained model as an MLflow artifact
         mlflow.sklearn.log_model(model, "model")
 
         print(
@@ -82,7 +83,7 @@ def train():
             f"precision: {metrics['precision']:.4f}"
         )
 
-        # 4. exit with code 1 if the model doesn't meet the minimum threshold
+        # exit with code 1 if the model doesn't meet the minimum threshold
         min_accuracy = config["training"]["min_accuracy_threshold"]
         if metrics["accuracy"] < min_accuracy:
             print(f"FAILED: accuracy {metrics['accuracy']:.4f} is below threshold {min_accuracy}")

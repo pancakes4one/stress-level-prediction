@@ -3,7 +3,12 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 
-from src.preprocessing import load_config, handle_missing_values, encode_categoricals
+from src.preprocessing import (
+    load_config,
+    handle_missing_values,
+    bucket_stress_level,
+    encode_categoricals,
+)
 from src.evaluate import evaluate_model
 
 
@@ -14,9 +19,12 @@ def get_small_sample():
     df = df.sample(n=200, random_state=42)
 
     df = handle_missing_values(df, strategy=config["preprocessing"]["strategy"])
-    df = encode_categoricals(df, columns=config["preprocessing"]["categorical_columns"])
 
     target_col = config["data"]["target_column"]
+    df = bucket_stress_level(df, target_col)
+
+    df = encode_categoricals(df, columns=config["preprocessing"]["categorical_columns"])
+
     X = df.drop(columns=[target_col, "user_id"])
     y = df[target_col]
 

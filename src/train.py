@@ -8,6 +8,7 @@ from sklearn.ensemble import RandomForestClassifier
 
 from preprocessing import (
     load_config,
+    resolve_data_path,
     validate_dataframe,
     simulate_missing_values,
     handle_missing_values,
@@ -29,7 +30,8 @@ def train(config=None):
     if config is None:
         config = load_config("configs/params.yaml")
 
-    df = pd.read_csv(config["data"]["path"])
+    data_path = resolve_data_path(config["data"]["path"])
+    df = pd.read_csv(data_path)
 
     # dataset is clean, simulate missing values
     df = simulate_missing_values(

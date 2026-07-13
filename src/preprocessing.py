@@ -1,13 +1,26 @@
+from pathlib import Path
+
 import pandas as pd
 import numpy as np
 import yaml
 
 
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+
 def load_config(config_path):
+    config_path = PROJECT_ROOT / config_path
     # opens the yaml file and turns it into a python dictionary
     with open(config_path, "r") as f:
         config = yaml.safe_load(f)
     return config
+
+
+def resolve_data_path(path):
+    path = Path(path)
+    if not path.is_absolute():
+        path = PROJECT_ROOT / path
+    return path
 
 
 def validate_dataframe(df, required_columns):

@@ -5,6 +5,7 @@ from sklearn.ensemble import RandomForestClassifier
 
 from src.preprocessing import (
     load_config,
+    resolve_data_path,
     handle_missing_values,
     bucket_stress_level,
     encode_categoricals,
@@ -14,7 +15,8 @@ from src.evaluate import evaluate_model
 
 def get_small_sample():
     config = load_config("configs/params.yaml")
-    df = pd.read_csv(config["data"]["path"])
+    data_path = resolve_data_path(config["data"]["path"])
+    df = pd.read_csv(data_path)
 
     df = df.sample(n=200, random_state=42)
 

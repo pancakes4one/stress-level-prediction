@@ -1,6 +1,6 @@
 import pandas as pd
 import pytest
-from src.preprocessing import load_config
+from src.preprocessing import load_config, resolve_data_path
 
 
 
@@ -11,7 +11,8 @@ def config():
 
 @pytest.fixture
 def df(config):
-    return pd.read_csv(config["data"]["path"])
+    data_path = resolve_data_path(config["data"]["path"])
+    return pd.read_csv(data_path)
 
 
 def test_expected_columns_present(df, config):

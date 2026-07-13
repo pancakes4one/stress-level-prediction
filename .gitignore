@@ -2,6 +2,7 @@
 models/
 metrics/
 mlruns/
+data/
 
 # Python
 __pycache__/
@@ -10,3 +11,4 @@ __pycache__/
 
 # OS
 .DS_Store
+.vscode/
